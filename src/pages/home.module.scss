@@ -1,44 +1,46 @@
 .container {
+  max-height: calc(100vh - 5rem);
+}
+
+.mainContainer {
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  max-height: calc(100vh - 5rem - 18.88rem);
+
   @media (max-width: 1368px) {
-    max-height: calc(100vh - 10rem);
+    min-height: calc(100vh - 10rem);
   }
 }
 
 .imgGirl {
   position: absolute;
-  height: 47.94rem;
-  bottom: 0;
-  margin-left: 17.5rem;
+  width: 42.31rem;
+  height: 57rem;
+
+  @media (max-width: 1368px) {
+    margin-left: -1rem;
+  }
 }
 
 .content {
   display: flex;
   align-items: center;
   margin-left: auto;
-  max-height: calc(100vh - 5rem - 18.88rem);
-  
-  @media (max-width: 1368px) {
-    position: relative;
-  }
   
   > img {
     margin-left: auto;
     height: 47.69rem;
+  }
 
-    @media (max-width: 1368px) {
-      position: absolute;
-      right: 0;
-    }
+  @media (max-width: 1368px) {
+    position: absolute;
+    margin-left: 30rem;
   }
 }
 
 .sectionContent {
-  max-width: 700px;
+  max-width: 43.75rem;
 
   > span {
     font-weight: 700;
@@ -71,47 +73,47 @@
       color: var(--white);
     }
   }
-}
 
-.containerActions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 2rem;
-
-  > button {
-    background-color: var(--yellow-50);
-    width: 13rem;
-    height: 3.5rem;
-    border-radius: 4px;
-    color: var(--purple-100);
-    font-size: 0.87rem;
-    font-weight: 700;
-    border: none;
-
-    transition: filter 0.2s;
-
-    &:hover {
-      filter: brightness(0.8);
+  .containerActions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 2rem;
+  
+    > button {
+      background-color: var(--yellow-50);
+      width: 13rem;
+      height: 3.5rem;
+      border-radius: 4px;
+      color: var(--purple-100);
+      font-size: 0.87rem;
+      font-weight: 700;
+      border: none;
+  
+      transition: filter 0.2s;
+  
+      &:hover {
+        filter: brightness(0.8);
+      }
     }
   }
-}
-
-.containerRadio {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.radio {
-  padding: 1rem;
-  background-color: var(--purple-250);
-  border: 1px solid var(--purple-100);
-  border-radius: 4px;
-  color: var(--white);
-
-  > input {
-    cursor: pointer;
+  
+  .containerRadio {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .radio {
+    padding: 1rem;
+    background-color: var(--purple-250);
+    border: 1px solid var(--purple-100);
+    border-radius: 4px;
+    color: var(--white);
+  
+    > input {
+      cursor: pointer;
+    }
   }
 }
 
