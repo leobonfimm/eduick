@@ -1,8 +1,24 @@
 import Head from 'next/head';
+import { useLayoutEffect, useState } from 'react';
 
 import styles from './home.module.scss';
 
 export default function Home() {
+  const [isWideVersion, setIsWideVersion] = useState(false);
+
+  useLayoutEffect(() => {
+    function updateSize() {
+      const { innerWidth } = window;
+      setIsWideVersion(innerWidth > 660);
+    }
+
+    window.addEventListener('resize', updateSize);
+
+    updateSize();
+
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
   return (
     <>
       <Head>
@@ -12,7 +28,7 @@ export default function Home() {
 
       <div className={styles.container}>
         <main className={styles.mainContainer}>
-          <img className={styles.imgGirl} src="/images/detail.svg" alt="Girl writing" />
+          <img className={styles.imgGirl} src={isWideVersion ? "/images/detail.svg" : "/images/detail-mobile.svg"} alt="Girl writing" />
 
           <div className={styles.content}>
             <section className={styles.sectionContent}>
@@ -21,9 +37,11 @@ export default function Home() {
                 <strong>best teacher</strong>
               </span>
 
-              <p>
-                Whether you are a student trying to find your ideal private language teachers/tutors or a teacher trying to find great students for your customised private lessons!
-              </p>
+              {isWideVersion && (
+                <p>
+                  Whether you are a student trying to find your ideal private language teachers/tutors or a teacher trying to find great students for your customised private lessons!
+                </p>
+              )}
 
               <input type="text" placeholder="Type here what are you looking for" />
 
@@ -44,9 +62,8 @@ export default function Home() {
               </div>
             </section>
 
-            <img src="/images/detail-left.svg" alt="detail" />
+            {isWideVersion && <img src="/images/detail-left.svg" alt="detail" />}
           </div>
-
         </main>
 
         <footer className={styles.footer}>
