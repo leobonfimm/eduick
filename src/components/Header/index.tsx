@@ -1,10 +1,14 @@
 import styles from './styles.module.scss';
 import { FiMenu, FiX } from 'react-icons/fi'
 import { useState } from 'react';
-import { useEffect } from 'react';
 import { useLayoutEffect } from 'react';
+import { useEffect } from 'react';
 
-export function Header() {
+interface HeaderProps {
+  handleOpenLoginModal: () => void;
+}
+
+export function Header({ handleOpenLoginModal }: HeaderProps) {
   const [isWideVersion, setIsWideVersion] = useState(false);
   const [isOpenToggleMenu, setIsOpenToggleMenu] = useState(false);
 
@@ -20,6 +24,11 @@ export function Header() {
 
     return () => window.removeEventListener('resize', updateSize);
   }, []);
+
+  function handleOpenLoginModalAndCloseToggleMenu() {
+    setIsOpenToggleMenu(false)
+    handleOpenLoginModal();
+  }
 
   if (isOpenToggleMenu && !isWideVersion) {
     return (
@@ -43,7 +52,12 @@ export function Header() {
                   <a href="">About Us</a>
                 </li>
                 <li>
-                  <button className={styles.buttonGetStarted}>Get Started</button>
+                  <button
+                    className={styles.buttonGetStarted}
+                    onClick={handleOpenLoginModalAndCloseToggleMenu}
+                  >
+                    Get Started
+                  </button>
                 </li>
               </ul>
             </nav>
@@ -74,7 +88,12 @@ export function Header() {
                   <a href="">About Us</a>
                 </li>
                 <li>
-                  <button className={styles.buttonGetStarted}>Get Started</button>
+                  <button
+                    className={styles.buttonGetStarted}
+                    onClick={handleOpenLoginModal}
+                  >
+                    Get Started
+                  </button>
                 </li>
               </ul>
             </nav>

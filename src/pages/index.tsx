@@ -1,10 +1,12 @@
 import Head from 'next/head';
 import { useLayoutEffect, useState } from 'react';
+import { FaCheckCircle, FaCircle } from 'react-icons/fa'
 
 import styles from './home.module.scss';
 
 export default function Home() {
   const [isWideVersion, setIsWideVersion] = useState(false);
+  const [isTeatcher, setIsTeatcher] = useState(true);
 
   useLayoutEffect(() => {
     function updateSize() {
@@ -47,15 +49,15 @@ export default function Home() {
 
               <div className={styles.containerActions}>
                 <div className={styles.containerRadio}>
-                  <div className={styles.radio}>
-                    <input type="radio" name="teacher" id="teacher" />
-                    <label htmlFor="teacher">i’m a teacher</label>
-                  </div>
+                  <button className={isTeatcher ? styles.buttonChecked : ''} onClick={() => setIsTeatcher(true)}>
+                    {isTeatcher ? <FaCheckCircle /> : <FaCircle />}
+                    <span>i’m a teacher</span>
+                  </button>
 
-                  <div className={styles.radio}>
-                    <input type="radio" name="student" id="student" />
-                    <label htmlFor="student">i’m a student</label>
-                  </div>
+                  <button className={!isTeatcher ? styles.buttonChecked : ''}  onClick={() => setIsTeatcher(false)}>
+                    {!isTeatcher ? <FaCheckCircle /> : <FaCircle />}
+                    <span>i’m a student</span>
+                  </button>
                 </div>
 
                 <button>SEARCH</button>
