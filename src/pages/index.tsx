@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaCheckCircle, FaCircle } from 'react-icons/fa'
 
 import styles from './home.module.scss';
@@ -8,7 +8,7 @@ export default function Home() {
   const [isWideVersion, setIsWideVersion] = useState(false);
   const [isTeatcher, setIsTeatcher] = useState(true);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     function updateSize() {
       const { innerWidth } = window;
       setIsWideVersion(innerWidth > 660);
@@ -49,18 +49,20 @@ export default function Home() {
 
               <div className={styles.containerActions}>
                 <div className={styles.containerRadio}>
-                  <button className={isTeatcher ? styles.buttonChecked : ''} onClick={() => setIsTeatcher(true)}>
+                  <button type="button" className={`${styles.buttonRadio} ${isTeatcher ? styles.buttonChecked : ''}`} onClick={() => setIsTeatcher(true)}>
                     {isTeatcher ? <FaCheckCircle /> : <FaCircle />}
                     <span>i’m a teacher</span>
                   </button>
 
-                  <button className={!isTeatcher ? styles.buttonChecked : ''}  onClick={() => setIsTeatcher(false)}>
+                  <button type="button" className={`${styles.buttonRadio} ${!isTeatcher ? styles.buttonChecked : ''}`}  onClick={() => setIsTeatcher(false)}>
                     {!isTeatcher ? <FaCheckCircle /> : <FaCircle />}
                     <span>i’m a student</span>
                   </button>
                 </div>
 
-                <button>SEARCH</button>
+                <button type="button" className={styles.buttonSearch}>
+                  SEARCH
+                </button>
               </div>
             </section>
 

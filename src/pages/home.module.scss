@@ -124,9 +124,16 @@
     justify-content: space-between;
     margin-top: 2rem;
 
+    @media (max-width: 660px) {
+      flex-direction: column;
+
+      > button {
+        width: 100%;
+      }
+    }
+
     label {
       width: 10.12rem;
-      text-transform: uppercase;
       background-color: var(--purple-250);
       border: 1px solid var(--purple-150);
       cursor: pointer;
@@ -159,12 +166,8 @@
       &:hover {
         filter: brightness(0.8);
       }
-    }
 
-    @media (max-width: 660px) {
-      flex-direction: column;
-
-      > button {
+      @media (max-width: 660px) {
         width: 100%;
       }
     }
@@ -175,7 +178,11 @@
     align-items: center;
     gap: 1rem;
 
-    button {
+    @media (max-width: 660px) {
+      width: 100%;
+    }
+
+    button.buttonRadio {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -211,28 +218,11 @@
       &:hover:not(.buttonChecked) {
         filter: brightness(0.8);
       }
-    }
 
-    @media (max-width: 660px) {
-      width: 100%;
-      justify-content: center;
-      margin-bottom: 1rem;
-    }
-  }
-  
-  .radio {
-    padding: 1rem;
-    background-color: var(--purple-250);
-    border: 1px solid var(--purple-100);
-    border-radius: 4px;
-    color: var(--white);
-  
-    > input {
-      cursor: pointer;
-    }
-
-    @media (max-width: 660px) {
-      width: 100%;
+      @media (max-width: 660px) {
+        width: 100%;
+        margin-bottom: 1rem;
+      }
     }
   }
 }

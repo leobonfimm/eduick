@@ -9,6 +9,7 @@ interface LoginModalProps {
   onRequestClose: () => void;
 }
 
+Modal.setAppElement('#__next');
 
 export function LoginModal({ isOpen, onRequestClose }: LoginModalProps) {
   const [isShowPassword, setIsShowPassword] = useState(false);
