@@ -2,8 +2,42 @@
   height: 5rem;
 }
 
+.dropdownMenuContainer {
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  position: absolute;
+  transition: all 0.3s ease;
+  z-index: 10;
+
+  .dropdownMenuContent {
+    width: 100%;
+    border: none;
+    height: 5rem;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 2rem;
+
+    > span {
+      color: #7A57FD;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    > svg {
+      color: #2E3A59;
+      font-size: 0;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
 .headerContent {
-  max-width: 1140px;
+  max-width: 1600px;
   height: 5rem;
   margin: 0 auto;
   padding: 0 2rem;
@@ -11,6 +45,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media(max-width: 1368px) {
+    max-width: 1140px;
+  }
 }
 
 .headerDivLeft {
@@ -58,6 +96,26 @@
       }
   }
 
+  .dropdownMenuButton{
+    border: none;
+    background: none;
+    
+    > svg {
+      font-size: 0;
+      color: #2E3A59;
+      width: 23px;
+      height: 23px;
+      cursor: pointer;
+    }
+  }
+
+  > svg {
+    color: #2E3A59;
+    font-size: 0;
+    width: 23px;
+    height: 23px;
+  }
+
   .avatarContainer {
     position: relative;
 
@@ -70,5 +128,9 @@
       border-radius: 50%;
       background-color: orange;
     }
+  }
+
+  @media(max-width: 1368px) {
+    gap: 0.4rem;
   }
 }

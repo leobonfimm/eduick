@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { HeaderSignin } from './headerSignin';
+import { HeaderSignin } from './HeaderSignin';
 import { HeaderDashboard } from './HeaderDashboard';
 
 interface HeaderProps {

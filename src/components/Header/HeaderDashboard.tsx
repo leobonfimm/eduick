@@ -1,5 +1,5 @@
 import styles from './headerDashboard.module.scss';
-import { FiCircle, FiMenu, FiX } from 'react-icons/fi'
+import { FiChevronDown, FiChevronUp, FiArrowRight } from 'react-icons/fi'
 import { useState } from 'react';
 import { useEffect } from 'react';
 
@@ -9,12 +9,12 @@ interface HeaderProps {
 
 export function HeaderDashboard({ handleOpenLoginModal }: HeaderProps) {
   const [isWideVersion, setIsWideVersion] = useState(false);
-  const [isOpenToggleMenu, setIsOpenToggleMenu] = useState(false);
+  const [isOpenDropdownMenu, setIsOpenDropdownMenu] = useState(false);
 
   useEffect(() => {
     function updateSize() {
       const { innerWidth } = window;
-      setIsWideVersion(innerWidth > 660);
+      setIsWideVersion(innerWidth > 730);
     }
 
     window.addEventListener('resize', updateSize);
@@ -24,32 +24,29 @@ export function HeaderDashboard({ handleOpenLoginModal }: HeaderProps) {
     return () => window.removeEventListener('resize', updateSize);
   }, []);
 
-  function handleOpenLoginModalAndCloseToggleMenu() {
-    setIsOpenToggleMenu(false)
-    handleOpenLoginModal();
-  }
-
-  if (isOpenToggleMenu && !isWideVersion) {
-    return (
-      <div className={styles.menuToggle}>
-      </div>
-    )
-  }
-
   return (
     <header className={styles.headerContainer}>
       <div className={styles.headerContent}>
         <div className={styles.headerDivLeft}>
-          <img src="/images/group-points.svg" alt="eduick" />
+          {isWideVersion && <img src="/images/group-points.svg" alt="eduick" />}
           <img className={styles.logoImg} src="/images/logo.svg" alt="eduick" />
 
-          <a href="">My Classes</a>
+          {isWideVersion && <a href="">My Classes</a>}
         </div>
 
         <div className={styles.headerDivRigth}>
-          <button type="button">
-            Change to teacher mode
-          </button>
+          {isWideVersion ? (
+            <button type="button">
+              Change to teacher mode
+            </button>
+          ) : (
+            <div
+              className={styles.dropdownMenuButton}
+              onClick={() => setIsOpenDropdownMenu(!isOpenDropdownMenu)}
+            >
+              {isOpenDropdownMenu ? <FiChevronUp /> : <FiChevronDown />}
+            </div>
+          )}
 
           <div className={styles.avatarContainer}>
             <img src="/images/avatar.svg" alt="avatar" />
@@ -58,6 +55,15 @@ export function HeaderDashboard({ handleOpenLoginModal }: HeaderProps) {
           </div>
         </div>
       </div>
+
+      {isOpenDropdownMenu && 
+        <div className={styles.dropdownMenuContainer}>
+          <button type="button" className={styles.dropdownMenuContent}>
+              <span>Change to teacher mode</span>
+              <FiArrowRight />
+          </button>
+        </div>
+      }
     </header>
   )
 }
