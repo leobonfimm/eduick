@@ -4,6 +4,7 @@ import { Rating } from 'react-simple-star-rating';
 
 import styles from './styles.module.scss';
 import { api } from '../../service/api';
+import { GetServerSideProps } from 'next';
 interface Lesson {
   id: number;
   rating: number;
@@ -11,8 +12,12 @@ interface Lesson {
   qtdLessons: number;
 }
 
-export default function Dashboard() {
-  const [lessons, setLessons] = useState<Lesson[]>([]);
+interface DashboardProps {
+  lessonsServerSide: Lesson[];
+}
+
+export default function Dashboard({ lessonsServerSide }: DashboardProps) {
+  const [lessons, setLessons] = useState<Lesson[]>(lessonsServerSide);
   const [pageNumber, setPageNumber] = useState(2);
   const [numberLessons, setNumberLessons] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -162,4 +167,17 @@ export default function Dashboard() {
       </div>
     </>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+
+  const response = await api.get('lessons?_page=${pageNumber}&_limit=3');
+
+  const lessonsServerSide = response.data;
+
+  return {
+    props: {
+      lessonsServerSide
+    }
+  };
 }
