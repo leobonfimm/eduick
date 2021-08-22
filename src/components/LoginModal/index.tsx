@@ -1,3 +1,4 @@
+import Router from 'next/router';
 import Modal from 'react-modal';
 import { FiX, FiEye, FiEyeOff } from 'react-icons/fi'
 
@@ -7,12 +8,21 @@ import { useState } from 'react';
 interface LoginModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
+  handleIsLogin: () => void;
 }
 
 Modal.setAppElement('#__next');
 
-export function LoginModal({ isOpen, onRequestClose }: LoginModalProps) {
+export function LoginModal({ isOpen, onRequestClose, handleIsLogin }: LoginModalProps) {
   const [isShowPassword, setIsShowPassword] = useState(false);
+
+
+  function handleLoginAndCloseModal() {
+    handleIsLogin();
+    onRequestClose();
+
+    Router.push('/dashboard');
+  }
 
   return (
     <Modal
@@ -53,7 +63,7 @@ export function LoginModal({ isOpen, onRequestClose }: LoginModalProps) {
             </button>
           </div>
 
-          <button>
+          <button onClick={handleLoginAndCloseModal}>
             Login
           </button>
         </div>

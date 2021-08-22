@@ -1,13 +1,23 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import Head from 'next/head';
-import { Rating, RatingView } from 'react-simple-star-rating';
-import { FiStar } from 'react-icons/fi';
+import { Rating } from 'react-simple-star-rating';
 
 import styles from './styles.module.scss';
+import { api } from '../../service/api';
+interface Lesson {
+  id: number;
+  rating: number;
+  title: string;
+  qtdLessons: number;
+}
 
 export default function Dashboard() {
+  const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [pageNumber, setPageNumber] = useState(2);
+  const [numberLessons, setNumberLessons] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
   const [isWideVersion, setIsWideVersion] = useState(false);
-  const [rating, setRating] = useState(3);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     function updateSize() {
@@ -22,9 +32,45 @@ export default function Dashboard() {
     return () => window.removeEventListener('resize', updateSize);
   }, []);
 
-  const handleRating = (rate) => {
-    setRating(rate)
-  }
+  useEffect(() => {
+    api
+      .get('lessons?_page=1&_limit=6')
+      .then(response => {
+        setLessons(response.data);
+        setNumberLessons(response.headers['x-total-count']);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (pageNumber <= 2) return;
+
+    async function getListLessonsPagination() {
+      const response = await api.get(`lessons?_page=${pageNumber}&_limit=3`);
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      setLessons(oldState => [...oldState, ...response.data]);
+      setIsLoading(false);
+    }
+
+    setIsLoading(true);
+    getListLessonsPagination();
+  }, [pageNumber])
+
+  useEffect(() => {
+    setHasMore(lessons.length < numberLessons);
+  }, [numberLessons, lessons.length]);
+
+  const observer = useRef(null);
+  const lastLessonElementRef = useCallback((node) => {
+    if (observer.current) observer.current.disconnect()
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPageNumber(oldState => oldState + 1);
+      }
+    });
+
+    if (node) observer.current.observe(node)
+  }, [hasMore]);
 
   return (
     <>
@@ -58,77 +104,53 @@ export default function Dashboard() {
           </section>
 
           <div className={styles.containerLesson}>
-            <div className={styles.contentLesson}>
-              <img
-                src="https://s3-alpha-sig.figma.com/img/b077/6fb7/cbbf6cbaf5f15aa394567935d5744c27?Expires=1630281600&Signature=GiFRbalxYUnl5p3FFbmfMivpavpy3Gti1YRSv0tPoXFQNFlbbmQS0RlTEB0M9Bydjq887btMTnE7kq-3gY7d2h~zlnS35~o9sTIa1wn5JooHVQdUF-H-yhb5WYdBYoFsMz9rjpOe6ho~o0EMhLaloqcRPOpEbEE8N~r4jCjiQBXy2dDgMEP~2NWRJlr2b0MbO9iXkcNKg2SRgQxno3M8R0KSKAEg3-6qo1lvfodjCQCh9dPvJiI~zSNjjLJ2YuwU-UbSn7099lHaizza7kyNq2ACfk-cVhQSQkbxTbOL-cCj45uv8sp9bT6SqfKLK8XJxZpe0X0yKQrumFlOQPiyEA__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"
-                alt=""
-              />
+            {isLoading && <div className={styles.isLoading} />}
 
-              <div className={styles.containerRating}>
-                <Rating onClick={handleRating} ratingValue={rating} />
+            {lessons.map((lesson, index) => {
+              if (lessons.length === index + 1) {
+                return (
+                  <div ref={lastLessonElementRef} key={lesson.id} className={styles.contentLesson}>
+                    <img
+                      className={styles.thumbnailLesson}
+                      src="https://s3-alpha-sig.figma.com/img/b077/6fb7/cbbf6cbaf5f15aa394567935d5744c27?Expires=1630281600&Signature=GiFRbalxYUnl5p3FFbmfMivpavpy3Gti1YRSv0tPoXFQNFlbbmQS0RlTEB0M9Bydjq887btMTnE7kq-3gY7d2h~zlnS35~o9sTIa1wn5JooHVQdUF-H-yhb5WYdBYoFsMz9rjpOe6ho~o0EMhLaloqcRPOpEbEE8N~r4jCjiQBXy2dDgMEP~2NWRJlr2b0MbO9iXkcNKg2SRgQxno3M8R0KSKAEg3-6qo1lvfodjCQCh9dPvJiI~zSNjjLJ2YuwU-UbSn7099lHaizza7kyNq2ACfk-cVhQSQkbxTbOL-cCj45uv8sp9bT6SqfKLK8XJxZpe0X0yKQrumFlOQPiyEA__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"
+                      alt={lesson.title}
+                    />
 
-                <div className={styles.containerQtdLessons}>
-                  10 LESSONS
-                </div>
+                    <div className={styles.containerRating}>
+                      <Rating onClick={() => { }} ratingValue={lesson.rating} />
 
-              </div>
+                      <div className={styles.containerQtdLessons}>
+                        {lesson.qtdLessons} LESSONS
+                      </div>
 
-              <h2 className={styles.titleLesson}>Master English: Improve Your Speaking</h2>
-            </div>
+                    </div>
 
-            <div className={styles.contentLesson}>
-              <img
-                src="https://s3-alpha-sig.figma.com/img/b077/6fb7/cbbf6cbaf5f15aa394567935d5744c27?Expires=1630281600&Signature=GiFRbalxYUnl5p3FFbmfMivpavpy3Gti1YRSv0tPoXFQNFlbbmQS0RlTEB0M9Bydjq887btMTnE7kq-3gY7d2h~zlnS35~o9sTIa1wn5JooHVQdUF-H-yhb5WYdBYoFsMz9rjpOe6ho~o0EMhLaloqcRPOpEbEE8N~r4jCjiQBXy2dDgMEP~2NWRJlr2b0MbO9iXkcNKg2SRgQxno3M8R0KSKAEg3-6qo1lvfodjCQCh9dPvJiI~zSNjjLJ2YuwU-UbSn7099lHaizza7kyNq2ACfk-cVhQSQkbxTbOL-cCj45uv8sp9bT6SqfKLK8XJxZpe0X0yKQrumFlOQPiyEA__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"
-                alt=""
-              />
+                    <h2 className={styles.titleLesson}>{lesson.title}</h2>
+                  </div>
+                )
+              } else {
+                return (
+                  <div key={lesson.id} className={styles.contentLesson}>
+                    <img
+                      className={styles.thumbnailLesson}
+                      src="https://s3-alpha-sig.figma.com/img/b077/6fb7/cbbf6cbaf5f15aa394567935d5744c27?Expires=1630281600&Signature=GiFRbalxYUnl5p3FFbmfMivpavpy3Gti1YRSv0tPoXFQNFlbbmQS0RlTEB0M9Bydjq887btMTnE7kq-3gY7d2h~zlnS35~o9sTIa1wn5JooHVQdUF-H-yhb5WYdBYoFsMz9rjpOe6ho~o0EMhLaloqcRPOpEbEE8N~r4jCjiQBXy2dDgMEP~2NWRJlr2b0MbO9iXkcNKg2SRgQxno3M8R0KSKAEg3-6qo1lvfodjCQCh9dPvJiI~zSNjjLJ2YuwU-UbSn7099lHaizza7kyNq2ACfk-cVhQSQkbxTbOL-cCj45uv8sp9bT6SqfKLK8XJxZpe0X0yKQrumFlOQPiyEA__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"
+                      alt={lesson.title}
+                    />
 
-              <div className={styles.containerRating}>
-                <Rating onClick={handleRating} ratingValue={rating} />
+                    <div className={styles.containerRating}>
+                      <Rating onClick={() => { }} ratingValue={lesson.rating} />
 
-                <div className={styles.containerQtdLessons}>
-                  10 LESSONS
-                </div>
+                      <div className={styles.containerQtdLessons}>
+                        {lesson.qtdLessons} LESSONS
+                      </div>
 
-              </div>
+                    </div>
 
-              <h2 className={styles.titleLesson}>Master English: Improve Your Speaking</h2>
-            </div>
-
-            <div className={styles.contentLesson}>
-              <img
-                src="https://s3-alpha-sig.figma.com/img/b077/6fb7/cbbf6cbaf5f15aa394567935d5744c27?Expires=1630281600&Signature=GiFRbalxYUnl5p3FFbmfMivpavpy3Gti1YRSv0tPoXFQNFlbbmQS0RlTEB0M9Bydjq887btMTnE7kq-3gY7d2h~zlnS35~o9sTIa1wn5JooHVQdUF-H-yhb5WYdBYoFsMz9rjpOe6ho~o0EMhLaloqcRPOpEbEE8N~r4jCjiQBXy2dDgMEP~2NWRJlr2b0MbO9iXkcNKg2SRgQxno3M8R0KSKAEg3-6qo1lvfodjCQCh9dPvJiI~zSNjjLJ2YuwU-UbSn7099lHaizza7kyNq2ACfk-cVhQSQkbxTbOL-cCj45uv8sp9bT6SqfKLK8XJxZpe0X0yKQrumFlOQPiyEA__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"
-                alt=""
-              />
-
-              <div className={styles.containerRating}>
-                <Rating onClick={handleRating} ratingValue={rating} />
-
-                <div className={styles.containerQtdLessons}>
-                  10 LESSONS
-                </div>
-
-              </div>
-
-              <h2 className={styles.titleLesson}>Master English: Improve Your Speaking</h2>
-            </div>
-
-            <div className={styles.contentLesson}>
-              <img
-                src="https://s3-alpha-sig.figma.com/img/b077/6fb7/cbbf6cbaf5f15aa394567935d5744c27?Expires=1630281600&Signature=GiFRbalxYUnl5p3FFbmfMivpavpy3Gti1YRSv0tPoXFQNFlbbmQS0RlTEB0M9Bydjq887btMTnE7kq-3gY7d2h~zlnS35~o9sTIa1wn5JooHVQdUF-H-yhb5WYdBYoFsMz9rjpOe6ho~o0EMhLaloqcRPOpEbEE8N~r4jCjiQBXy2dDgMEP~2NWRJlr2b0MbO9iXkcNKg2SRgQxno3M8R0KSKAEg3-6qo1lvfodjCQCh9dPvJiI~zSNjjLJ2YuwU-UbSn7099lHaizza7kyNq2ACfk-cVhQSQkbxTbOL-cCj45uv8sp9bT6SqfKLK8XJxZpe0X0yKQrumFlOQPiyEA__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"
-                alt=""
-              />
-
-              <div className={styles.containerRating}>
-                <Rating onClick={handleRating} ratingValue={rating} />
-
-                <div className={styles.containerQtdLessons}>
-                  10 LESSONS
-                </div>
-
-              </div>
-
-              <h2 className={styles.titleLesson}>Master English: Improve Your Speaking</h2>
-            </div>
+                    <h2 className={styles.titleLesson}>{lesson.title}</h2>
+                  </div>
+                )
+              }
+            })}
           </div>
         </main>
 

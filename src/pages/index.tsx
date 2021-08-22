@@ -1,10 +1,15 @@
 import Head from 'next/head';
+import Router from 'next/router';
 import { useEffect, useState } from 'react';
 import { FaCheckCircle, FaCircle } from 'react-icons/fa'
 
 import styles from './home.module.scss';
 
-export default function Home() {
+interface HomeProps {
+  handleIsLogin: () => void;
+}
+
+export default function Home({ handleIsLogin }: HomeProps) {
   const [isWideVersion, setIsWideVersion] = useState(false);
   const [isTeatcher, setIsTeatcher] = useState(true);
 
@@ -20,6 +25,12 @@ export default function Home() {
 
     return () => window.removeEventListener('resize', updateSize);
   }, []);
+
+  function handleLoginAndCloseModal() {
+    handleIsLogin();
+
+    Router.push('/dashboard');
+  }
 
   return (
     <>
@@ -60,7 +71,7 @@ export default function Home() {
                   </button>
                 </div>
 
-                <button type="button" className={styles.buttonSearch}>
+                <button type="button" className={styles.buttonSearch} onClick={handleLoginAndCloseModal}>
                   SEARCH
                 </button>
               </div>

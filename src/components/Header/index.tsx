@@ -4,14 +4,13 @@ import { HeaderDashboard } from './HeaderDashboard';
 
 interface HeaderProps {
   handleOpenLoginModal: () => void;
+  isLogin: boolean;
 }
 
-export function Header({ handleOpenLoginModal }: HeaderProps) {
-  const [isLogged, setIsLogged] = useState(true);
-
+export function Header({ handleOpenLoginModal, isLogin }: HeaderProps) {
   return (
     <>
-      {!isLogged ? 
+      {!isLogin ? 
         <HeaderSignin handleOpenLoginModal={handleOpenLoginModal} />
         :
         <HeaderDashboard handleOpenLoginModal={handleOpenLoginModal} />
