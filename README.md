@@ -33,4 +33,4 @@ Desenvolvimento da interface de uma landing page e uma dashboard baseado no segu
 - Extrair/Clonar o repositório
 - Instalar as dependências com ```yarn```
 - Inicie o servidor com ```yarn dev```
-- Abra seu navegaodr e bastar colcoar ```http://localhost:3000```
+- Abra seu navegador e cole o link: ```http://localhost:3000```
